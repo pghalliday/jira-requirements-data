@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/pghalliday/jira-requirements-data#readme",
   "dependencies": {
-    "jira-search": "^0.1.0"
+    "coffee-script": "^1.9.3",
+    "jira-search": "^0.1.0",
+    "q": "^1.4.1"
   }
 }
