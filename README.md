@@ -21,24 +21,31 @@ search({
   pass: 'mypassword',
   maxResults: 50,
   project: 'myproject',
-  issueTypes: [
-    name: 'Requirement'
+  issueTypes: [{
+    name: 'Requirement',
+    inwardLinkTypes: [
+      'is covered by',
+      'is implemented by',
+    ]
+  }, {
+    name: 'Change Request',
+    inwardLinkTypes: [
+      'is covered by',
+      'is implemented by',
+    ]
+  }, {
+    name: 'Risk',
     inwardLinkTypes: [
       'is covered by'
-      'is implemented by'
     ]
-  ,
-    name: 'Change Request'
-    inwardLinkTypes: [
-      'is covered by'
-      'is implemented by'
-    ]
-  ,
-    name: 'Risk'
-    inwardLinkTypes: [
-      'is covered by'
-    ]
-  ]
+  }],
+  onTotal: function (total) {
+    // start a progress bar or something
+  },
+  onIssue: function (issue) {
+    // update a progress bar or something
+    // also the raw issue data will be provided here
+  }
 }).then(function (issues) {
   console.log(issues);
 }).done();
