@@ -1,6 +1,8 @@
 # jira-requirements-data
 
-Promise based library to query a JIRA project and return a list of requirements with the issues that have been linked to them to indicate that those issues satisfy the requirements
+Promise based library to query a JIRA project and return a list of requirements and linked issues with their statuses.
+
+For use in projects where requirements are collected then issues satisfying those requirements are created and linked using JIRA issue linking with a many to many relationship in an analysis phase.
 
 Usage
 -----
@@ -42,7 +44,7 @@ search({
 }).done();
 ```
 
-The issues array will contain the following data
+The issues array will contain the following structured data
 
 ```javascript
 [

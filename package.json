@@ -1,7 +1,7 @@
 {
   "name": "jira-requirements-data",
   "version": "1.0.0",
-  "description": "",
+  "description": "query jira requirements data",
   "main": "index.js",
   "scripts": {
     "prepublish": "coffee -c index.coffee",
@@ -11,8 +11,8 @@
     "type": "git",
     "url": "git+https://github.com/pghalliday/jira-requirements-data.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Peter Halliday <pghalliday@gmail.com>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/pghalliday/jira-requirements-data/issues"
   },
