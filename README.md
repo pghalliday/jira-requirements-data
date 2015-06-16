@@ -78,6 +78,7 @@ search({
       done: [
         'done'
       ]
+    }
   }, {
     name: 'Story',
     states: {
@@ -86,12 +87,14 @@ search({
         'verified',
         'closed'
       ]
+    }
   }, {
     name: 'Task',
     states: {
       done: [
         'done'
       ]
+    }
   }]
   onTotal: function (total) {
     // start a progress bar or something
