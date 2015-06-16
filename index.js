@@ -9,14 +9,24 @@
 
   module.exports = function(params) {
     return Q().then(function() {
-      var issueType, issueTypes;
-      issueTypes = (function() {
+      var requirementType, requirementTypes, taskType, taskTypes;
+      requirementTypes = (function() {
         var i, len, ref, results;
-        ref = params.issueTypes;
+        ref = params.requirements;
         results = [];
         for (i = 0, len = ref.length; i < len; i++) {
-          issueType = ref[i];
-          results.push(issueType.name);
+          requirementType = ref[i];
+          results.push(requirementType.name);
+        }
+        return results;
+      })();
+      taskTypes = (function() {
+        var i, len, ref, results;
+        ref = params.tasks;
+        results = [];
+        for (i = 0, len = ref.length; i < len; i++) {
+          taskType = ref[i];
+          results.push(taskType.name);
         }
         return results;
       })();
@@ -25,56 +35,88 @@
         strictSSL: params.strictSSL,
         user: params.user,
         pass: params.pass,
-        jql: 'project = "' + params.project + '" and issueType in ("' + issueTypes.join('", "') + '") order by rank',
+        jql: 'project = "' + params.project + '" and issueType in ("' + requirementTypes.join('", "') + '") order by rank',
         fields: 'summary,issuelinks,status,issuetype',
         expand: '',
         maxResults: params.maxResults,
         onTotal: params.onTotal,
         mapCallback: function(issue) {
-          var inwardIssue, inwardLinkTypes, issuelink;
-          if (params.onIssue) {
-            params.onIssue(issue);
-          }
-          inwardLinkTypes = ((function() {
+          var inwardIssue, inwardLinkTypes, issuelink, ref, requirement, requirementState, requirementStateName, requirementStates, requirementTypeName, taskState, taskStateName, taskStates, taskTypeName;
+          requirementTypeName = issue.fields.issuetype.name;
+          ref = ((function() {
             var i, len, ref, results;
-            ref = params.issueTypes;
+            ref = params.requirements;
             results = [];
             for (i = 0, len = ref.length; i < len; i++) {
-              issueType = ref[i];
-              if (issueType.name === issue.fields.issuetype.name) {
-                results.push(issueType.inwardLinkTypes);
+              requirementType = ref[i];
+              if (requirementType.name === requirementTypeName) {
+                results.push([requirementType.inwardLinkTypes, requirementType.states]);
               }
             }
             return results;
-          })())[0];
-          return {
+          })())[0], inwardLinkTypes = ref[0], requirementStates = ref[1];
+          requirementStateName = issue.fields.status.name;
+          requirementState = 'notready';
+          if (indexOf.call(requirementStates.ready, requirementStateName) >= 0) {
+            requirementState = 'ready';
+          }
+          if (indexOf.call(requirementStates.done, requirementStateName) >= 0) {
+            requirementState = 'done';
+          }
+          requirement = {
             id: issue.id,
-            issuetype: issue.fields.issuetype.name,
+            issuetype: requirementTypeName,
             key: issue.key,
             summary: issue.fields.summary,
-            status: issue.fields.status.name,
+            state: requirementState,
             issuelinks: (function() {
-              var i, len, ref, ref1, results;
-              ref = issue.fields.issuelinks;
+              var i, len, ref1, ref2, results;
+              ref1 = issue.fields.issuelinks;
               results = [];
-              for (i = 0, len = ref.length; i < len; i++) {
-                issuelink = ref[i];
-                if (!(ref1 = issuelink.type.inward, indexOf.call(inwardLinkTypes, ref1) >= 0)) {
+              for (i = 0, len = ref1.length; i < len; i++) {
+                issuelink = ref1[i];
+                if (!(ref2 = issuelink.type.inward, indexOf.call(inwardLinkTypes, ref2) >= 0)) {
                   continue;
                 }
                 inwardIssue = issuelink.inwardIssue;
-                results.push({
-                  id: inwardIssue.id,
-                  linktype: issuelink.type.inward,
-                  issuetype: inwardIssue.fields.issuetype.name,
-                  key: inwardIssue.key,
-                  summary: inwardIssue.fields.summary,
-                  status: inwardIssue.fields.status.name
-                });
+                taskTypeName = inwardIssue.fields.issuetype.name;
+                if (indexOf.call(taskTypes, taskTypeName) >= 0) {
+                  taskStates = ((function() {
+                    var j, len1, ref3, results1;
+                    ref3 = params.tasks;
+                    results1 = [];
+                    for (j = 0, len1 = ref3.length; j < len1; j++) {
+                      taskType = ref3[j];
+                      if (taskType.name === taskTypeName) {
+                        results1.push(taskType.states);
+                      }
+                    }
+                    return results1;
+                  })())[0];
+                  taskStateName = inwardIssue.fields.status.name;
+                  taskState = 'notdone';
+                  if (indexOf.call(taskStates.done, taskStateName) >= 0) {
+                    taskState = 'done';
+                  }
+                  results.push({
+                    id: inwardIssue.id,
+                    linktype: issuelink.type.inward,
+                    issuetype: taskTypeName,
+                    key: inwardIssue.key,
+                    summary: inwardIssue.fields.summary,
+                    state: taskState
+                  });
+                } else {
+                  results.push(void 0);
+                }
               }
               return results;
             })()
           };
+          if (params.onRequirement) {
+            params.onRequirement(requirement);
+          }
+          return requirement;
         }
       });
     });

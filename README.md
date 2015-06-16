@@ -21,37 +21,91 @@ search({
   pass: 'mypassword',
   maxResults: 50,
   project: 'myproject',
-  issueTypes: [{
+  requirements: [{
     name: 'Requirement',
     inwardLinkTypes: [
       'is covered by',
-      'is implemented by',
-    ]
+      'is implemented by'
+    ],
+    states: {
+      done: [
+        'done'
+      ],
+      ready: [
+        'ready for deployment'
+      ]
+    }
   }, {
     name: 'Change Request',
     inwardLinkTypes: [
       'is covered by',
-      'is implemented by',
-    ]
+      'is implemented by'
+    ],
+    states: {
+      done: [
+        'done'
+      ],
+      ready: [
+        'ready for deployment'
+      ]
+    }
   }, {
     name: 'Risk',
     inwardLinkTypes: [
       'is covered by'
-    ]
+    ],
+    states: {
+      done: [
+        'done'
+      ],
+      ready: [
+        'ready for deployment'
+      ]
+    }
   }],
+  tasks: [{
+    name: 'Bug',
+    states: {
+      done: [
+        'resolved',
+        'verified',
+        'closed'
+      ]
+    }
+  }, {
+    name: 'Code Review',
+    states: {
+      done: [
+        'done'
+      ]
+  }, {
+    name: 'Story',
+    states: {
+      done: [
+        'resolved',
+        'verified',
+        'closed'
+      ]
+  }, {
+    name: 'Task',
+    states: {
+      done: [
+        'done'
+      ]
+  }]
   onTotal: function (total) {
     // start a progress bar or something
   },
-  onIssue: function (issue) {
+  onRequirement: function (requirement) {
     // update a progress bar or something
-    // also the raw issue data will be provided here
+    // also the requirement data will be provided here
   }
-}).then(function (issues) {
-  console.log(issues);
+}).then(function (requirements) {
+  console.log(requirements);
 }).done();
 ```
 
-The issues array will contain the following structured data
+The requirements array will contain the following structured data
 
 ```javascript
 [
@@ -60,7 +114,7 @@ The issues array will contain the following structured data
     issuetype: 'Requirement', // The issue type name
     key: 'KEY-123', // The issue key
     summary: 'Implement something', // The issue summary
-    status: 'Ready', // The issue status name
+    state: 'ready', // The issue state, one of ['notready', 'ready', 'done']
     issuelinks: [
       {
         id: 45321, // The linked issue id
@@ -68,7 +122,7 @@ The issues array will contain the following structured data
         issuetype: 'Story', // The linked issue type name
         key: 'KEY-4535', // The linked issue key
         summary: 'As a user I want to do something so that I can get something', // The linked issue summary
-        status: 'To Do' // The linked issue status
+        state: 'done', // The issue state, one of ['notdone', 'done']
       },
       ...
     ]

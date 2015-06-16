@@ -1,10 +1,12 @@
 {
   "name": "jira-requirements-data",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "query jira requirements data",
   "main": "index.js",
   "scripts": {
-    "prepublish": "coffee -c index.coffee",
+    "build": "coffee -c index.coffee",
+    "prepublish": "npm run build",
+    "pretest": "npm run build",
     "test": "coffee test.coffee"
   },
   "repository": {
