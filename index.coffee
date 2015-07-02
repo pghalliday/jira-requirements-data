@@ -57,27 +57,31 @@ module.exports = (params) ->
             requirementState = 'notready'
             requirementState = 'ready' if requirementStateName in requirementStates.ready
             requirementState = 'done' if requirementStateName in requirementStates.done
+            issuelinkFilter = (issuelink) ->
+              if issuelink.type.inward in inwardLinkTypes
+                inwardIssue = issuelink.inwardIssue
+                taskTypeName = inwardIssue.fields.issuetype.name
+                if taskTypeName in taskTypes
+                  taskStates = (taskType.states for taskType in params.tasks when taskType.name is taskTypeName)[0]
+                  taskStateName = inwardIssue.fields.status.name
+                  if not (taskStateName in params.excludedStates)
+                    issuelink.taskState = 'notdone'
+                    issuelink.taskState = 'done' if taskStateName in taskStates.done
+                    true
             requirement =
               id: issue.id
               issuetype: requirementTypeName
               key: issue.key
               summary: issue.fields.summary
               state: requirementState
-              issuelinks: for issuelink in issue.fields.issuelinks when issuelink.type.inward in inwardLinkTypes
+              issuelinks: for issuelink in issue.fields.issuelinks when issuelinkFilter issuelink
                 inwardIssue = issuelink.inwardIssue
-                taskTypeName = inwardIssue.fields.issuetype.name
-                if taskTypeName in taskTypes
-                  taskStates = (taskType.states for taskType in params.tasks when taskType.name is taskTypeName)[0]
-                  taskStateName = inwardIssue.fields.status.name
-                  if not taskStateName in params.excludedStates
-                    taskState = 'notdone'
-                    taskState = 'done' if taskStateName in taskStates.done
-                    id: inwardIssue.id
-                    linktype: issuelink.type.inward
-                    issuetype: taskTypeName
-                    key: inwardIssue.key
-                    summary: inwardIssue.fields.summary
-                    state: taskState
+                id: inwardIssue.id
+                linktype: issuelink.type.inward
+                issuetype: inwardIssue.fields.issuetype.name
+                key: inwardIssue.key
+                summary: inwardIssue.fields.summary
+                state: issuelink.taskState
             params.onRequirement(requirement) if params.onRequirement
             requirement
       ]

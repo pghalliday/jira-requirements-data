@@ -93,7 +93,7 @@
           maxResults: params.maxResults,
           onTotal: params.onRequirementsTotal,
           mapCallback: function(issue) {
-            var inwardIssue, inwardLinkTypes, issuelink, ref, requirement, requirementState, requirementStateName, requirementStates, requirementTypeName, taskState, taskStateName, taskStates, taskTypeName;
+            var inwardIssue, inwardLinkTypes, issuelink, issuelinkFilter, ref, requirement, requirementState, requirementStateName, requirementStates, requirementTypeName;
             requirementTypeName = issue.fields.issuetype.name;
             ref = ((function() {
               var i, len, ref, results;
@@ -115,6 +115,35 @@
             if (indexOf.call(requirementStates.done, requirementStateName) >= 0) {
               requirementState = 'done';
             }
+            issuelinkFilter = function(issuelink) {
+              var inwardIssue, ref1, taskStateName, taskStates, taskTypeName;
+              if (ref1 = issuelink.type.inward, indexOf.call(inwardLinkTypes, ref1) >= 0) {
+                inwardIssue = issuelink.inwardIssue;
+                taskTypeName = inwardIssue.fields.issuetype.name;
+                if (indexOf.call(taskTypes, taskTypeName) >= 0) {
+                  taskStates = ((function() {
+                    var i, len, ref2, results;
+                    ref2 = params.tasks;
+                    results = [];
+                    for (i = 0, len = ref2.length; i < len; i++) {
+                      taskType = ref2[i];
+                      if (taskType.name === taskTypeName) {
+                        results.push(taskType.states);
+                      }
+                    }
+                    return results;
+                  })())[0];
+                  taskStateName = inwardIssue.fields.status.name;
+                  if (!(indexOf.call(params.excludedStates, taskStateName) >= 0)) {
+                    issuelink.taskState = 'notdone';
+                    if (indexOf.call(taskStates.done, taskStateName) >= 0) {
+                      issuelink.taskState = 'done';
+                    }
+                    return true;
+                  }
+                }
+              }
+            };
             requirement = {
               id: issue.id,
               issuetype: requirementTypeName,
@@ -122,49 +151,23 @@
               summary: issue.fields.summary,
               state: requirementState,
               issuelinks: (function() {
-                var i, len, ref1, ref2, ref3, results;
+                var i, len, ref1, results;
                 ref1 = issue.fields.issuelinks;
                 results = [];
                 for (i = 0, len = ref1.length; i < len; i++) {
                   issuelink = ref1[i];
-                  if (!(ref2 = issuelink.type.inward, indexOf.call(inwardLinkTypes, ref2) >= 0)) {
+                  if (!(issuelinkFilter(issuelink))) {
                     continue;
                   }
                   inwardIssue = issuelink.inwardIssue;
-                  taskTypeName = inwardIssue.fields.issuetype.name;
-                  if (indexOf.call(taskTypes, taskTypeName) >= 0) {
-                    taskStates = ((function() {
-                      var j, len1, ref3, results1;
-                      ref3 = params.tasks;
-                      results1 = [];
-                      for (j = 0, len1 = ref3.length; j < len1; j++) {
-                        taskType = ref3[j];
-                        if (taskType.name === taskTypeName) {
-                          results1.push(taskType.states);
-                        }
-                      }
-                      return results1;
-                    })())[0];
-                    taskStateName = inwardIssue.fields.status.name;
-                    if (ref3 = !taskStateName, indexOf.call(params.excludedStates, ref3) >= 0) {
-                      taskState = 'notdone';
-                      if (indexOf.call(taskStates.done, taskStateName) >= 0) {
-                        taskState = 'done';
-                      }
-                      results.push({
-                        id: inwardIssue.id,
-                        linktype: issuelink.type.inward,
-                        issuetype: taskTypeName,
-                        key: inwardIssue.key,
-                        summary: inwardIssue.fields.summary,
-                        state: taskState
-                      });
-                    } else {
-                      results.push(void 0);
-                    }
-                  } else {
-                    results.push(void 0);
-                  }
+                  results.push({
+                    id: inwardIssue.id,
+                    linktype: issuelink.type.inward,
+                    issuetype: inwardIssue.fields.issuetype.name,
+                    key: inwardIssue.key,
+                    summary: inwardIssue.fields.summary,
+                    state: issuelink.taskState
+                  });
                 }
                 return results;
               })()
