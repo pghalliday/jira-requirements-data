@@ -40,7 +40,7 @@
             }
             return results;
           })();
-          if (sprint.state === !'CLOSED') {
+          if (sprint.state !== 'CLOSED') {
             (ref = sprint.issues).push.apply(ref, (function() {
               var i, len, ref, results;
               ref = report.contents.incompletedIssues;

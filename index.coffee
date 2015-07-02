@@ -21,7 +21,7 @@ module.exports = (params) ->
           name: report.sprint.name
           state: report.sprint.state
         sprint.issues = (issue.id for issue in report.contents.completedIssues)
-        if sprint.state is not 'CLOSED'
+        if sprint.state isnt 'CLOSED'
           sprint.issues.push (issue.id for issue in report.contents.incompletedIssues)...
         onSprint(sprint) if onSprint
         sprint
