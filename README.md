@@ -112,7 +112,7 @@ jiraRequirementsData({
     // update a progress bar or something
     // also the task sprint data will be provided here
   },
-  onTotal: function (total) {
+  onRequirementsTotal: function (total) {
     // start a progress bar or something
   },
   onRequirement: function (requirement) {

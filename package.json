@@ -1,6 +1,6 @@
 {
   "name": "jira-requirements-data",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "query jira requirements data",
   "main": "index.js",
   "scripts": {
@@ -19,8 +19,10 @@
     "url": "https://github.com/pghalliday/jira-requirements-data/issues"
   },
   "homepage": "https://github.com/pghalliday/jira-requirements-data#readme",
+  "devDependencies": {
+    "coffee-script": "^1.9.3"
+  },
   "dependencies": {
-    "coffee-script": "^1.9.3",
     "jira-search": "^0.1.0",
     "jira-sprints": "^0.1.0",
     "q": "^1.4.1"

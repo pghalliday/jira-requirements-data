@@ -49,7 +49,7 @@ module.exports = (params) ->
           fields: 'summary,issuelinks,status,issuetype'
           expand: ''
           maxResults: params.maxResults
-          onTotal: params.onTotal
+          onTotal: params.onRequirementsTotal
           mapCallback: (issue) ->
             requirementTypeName = issue.fields.issuetype.name
             [inwardLinkTypes, requirementStates] = ([requirementType.inwardLinkTypes, requirementType.states] for requirementType in params.requirements when requirementType.name is requirementTypeName)[0]

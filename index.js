@@ -91,7 +91,7 @@
           fields: 'summary,issuelinks,status,issuetype',
           expand: '',
           maxResults: params.maxResults,
-          onTotal: params.onTotal,
+          onTotal: params.onRequirementsTotal,
           mapCallback: function(issue) {
             var inwardIssue, inwardLinkTypes, issuelink, ref, requirement, requirementState, requirementStateName, requirementStates, requirementTypeName, taskState, taskStateName, taskStates, taskTypeName;
             requirementTypeName = issue.fields.issuetype.name;
