@@ -12,15 +12,17 @@ npm install jira-requirements-data
 ```
 
 ```javascript
-var search = require('jira-requirements-data');
+var jiraRequirementsData = require('jira-requirements-data');
 
-search({
+jiraRequirementsData({
   serverRoot: 'https://my.jira.server',
   strictSSL: true,
   user: 'myuser',
   pass: 'mypassword',
   maxResults: 50,
   project: 'myproject',
+  requirementsRapidView: 123,
+  tasksRapidView: 456,
   requirements: [{
     name: 'Requirement',
     inwardLinkTypes: [
@@ -96,6 +98,20 @@ search({
       ]
     }
   }]
+  onRequirementSprintsTotal: function (total) {
+    // start a progress bar or something
+  },
+  onRequirementSprint: function (sprint) {
+    // update a progress bar or something
+    // also the requirement sprint data will be provided here
+  },
+  onTaskSprintsTotal: function (total) {
+    // start a progress bar or something
+  },
+  onTaskSprint: function (sprint) {
+    // update a progress bar or something
+    // also the task sprint data will be provided here
+  },
   onTotal: function (total) {
     // start a progress bar or something
   },
@@ -103,12 +119,36 @@ search({
     // update a progress bar or something
     // also the requirement data will be provided here
   }
-}).then(function (requirements) {
+}).spread(function (requirementSprints, taskSprints, requirements) {
+  console.log(requirementSprints);
+  console.log(taskSprints);
   console.log(requirements);
 }).done();
 ```
 
-The requirements array will contain the following structured data
+The `requirementSprints` and `taskSprints` arrays will contain the following structured data
+
+```javascript
+[
+  {
+    id: 123, // The sprint ID
+    sequence: 4561, // The sprint sequence number (for ordering in the rapid view)
+    startDate: '13/May/14 5:38 PM', // The sprint start date
+    endDate: '27/May/14 5:38 PM', // The sprint end date
+    completeDate: '20/Jun/14 5:38 PM', // The sprint complete date (when the sprint was actually closed)
+    name: 'My Sprint', // The sprint name
+    state: 'CLOSED', // The sprint state, one of ['CLOSED', 'FUTURE', 'ACTIVE']
+    issues = [ // Array of issue IDs associated with the sprint
+      12345,
+      45678,
+      ...
+    ]
+  },
+  ...
+]
+```
+
+The `requirements` array will contain the following structured data
 
 ```javascript
 [
