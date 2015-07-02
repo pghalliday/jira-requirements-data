@@ -172,6 +172,12 @@
           }
         })
       ];
+    }).spread(function(requirementSprints, taskSprints, requirements) {
+      return {
+        requirementSprints: requirementSprints,
+        taskSprints: taskSprints,
+        requirements: requirements
+      };
     });
   };
 

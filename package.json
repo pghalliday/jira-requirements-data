@@ -1,6 +1,6 @@
 {
   "name": "jira-requirements-data",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "query jira requirements data",
   "main": "index.js",
   "scripts": {

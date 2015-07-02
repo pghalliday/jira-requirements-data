@@ -119,10 +119,10 @@ jiraRequirementsData({
     // update a progress bar or something
     // also the requirement data will be provided here
   }
-}).spread(function (requirementSprints, taskSprints, requirements) {
-  console.log(requirementSprints);
-  console.log(taskSprints);
-  console.log(requirements);
+}).then(function (data) {
+  console.log(data.requirementSprints);
+  console.log(data.taskSprints);
+  console.log(data.requirements);
 }).done();
 ```
 

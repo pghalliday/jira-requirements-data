@@ -80,3 +80,7 @@ module.exports = (params) ->
             params.onRequirement(requirement) if params.onRequirement
             requirement
       ]
+    .spread (requirementSprints, taskSprints, requirements) ->
+      requirementSprints: requirementSprints
+      taskSprints: taskSprints
+      requirements: requirements
