@@ -23,6 +23,10 @@ jiraRequirementsData({
   project: 'myproject',
   requirementsRapidView: 123,
   tasksRapidView: 456,
+  excludedStates: [
+    'parked',
+    'rejected'
+  ],
   requirements: [{
     name: 'Requirement',
     inwardLinkTypes: [

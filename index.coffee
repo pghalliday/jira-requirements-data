@@ -45,7 +45,7 @@ module.exports = (params) ->
           strictSSL: params.strictSSL
           user: params.user
           pass: params.pass
-          jql: 'project = "' + params.project + '" and issueType in ("' + requirementTypes.join('", "') + '") order by rank'
+          jql: 'project = "' + params.project + '" and issueType in ("' + requirementTypes.join('", "') + '") and status not in ("' + params.excludedStates.join('", "') + '") order by rank'
           fields: 'summary,issuelinks,status,issuetype'
           expand: ''
           maxResults: params.maxResults
@@ -69,14 +69,15 @@ module.exports = (params) ->
                 if taskTypeName in taskTypes
                   taskStates = (taskType.states for taskType in params.tasks when taskType.name is taskTypeName)[0]
                   taskStateName = inwardIssue.fields.status.name
-                  taskState = 'notdone'
-                  taskState = 'done' if taskStateName in taskStates.done
-                  id: inwardIssue.id
-                  linktype: issuelink.type.inward
-                  issuetype: taskTypeName
-                  key: inwardIssue.key
-                  summary: inwardIssue.fields.summary
-                  state: taskState
+                  if not taskStateName in params.excludedStates
+                    taskState = 'notdone'
+                    taskState = 'done' if taskStateName in taskStates.done
+                    id: inwardIssue.id
+                    linktype: issuelink.type.inward
+                    issuetype: taskTypeName
+                    key: inwardIssue.key
+                    summary: inwardIssue.fields.summary
+                    state: taskState
             params.onRequirement(requirement) if params.onRequirement
             requirement
       ]

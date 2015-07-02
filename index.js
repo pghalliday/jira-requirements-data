@@ -87,7 +87,7 @@
           strictSSL: params.strictSSL,
           user: params.user,
           pass: params.pass,
-          jql: 'project = "' + params.project + '" and issueType in ("' + requirementTypes.join('", "') + '") order by rank',
+          jql: 'project = "' + params.project + '" and issueType in ("' + requirementTypes.join('", "') + '") and status not in ("' + params.excludedStates.join('", "') + '") order by rank',
           fields: 'summary,issuelinks,status,issuetype',
           expand: '',
           maxResults: params.maxResults,
@@ -122,7 +122,7 @@
               summary: issue.fields.summary,
               state: requirementState,
               issuelinks: (function() {
-                var i, len, ref1, ref2, results;
+                var i, len, ref1, ref2, ref3, results;
                 ref1 = issue.fields.issuelinks;
                 results = [];
                 for (i = 0, len = ref1.length; i < len; i++) {
@@ -146,18 +146,22 @@
                       return results1;
                     })())[0];
                     taskStateName = inwardIssue.fields.status.name;
-                    taskState = 'notdone';
-                    if (indexOf.call(taskStates.done, taskStateName) >= 0) {
-                      taskState = 'done';
+                    if (ref3 = !taskStateName, indexOf.call(params.excludedStates, ref3) >= 0) {
+                      taskState = 'notdone';
+                      if (indexOf.call(taskStates.done, taskStateName) >= 0) {
+                        taskState = 'done';
+                      }
+                      results.push({
+                        id: inwardIssue.id,
+                        linktype: issuelink.type.inward,
+                        issuetype: taskTypeName,
+                        key: inwardIssue.key,
+                        summary: inwardIssue.fields.summary,
+                        state: taskState
+                      });
+                    } else {
+                      results.push(void 0);
                     }
-                    results.push({
-                      id: inwardIssue.id,
-                      linktype: issuelink.type.inward,
-                      issuetype: taskTypeName,
-                      key: inwardIssue.key,
-                      summary: inwardIssue.fields.summary,
-                      state: taskState
-                    });
                   } else {
                     results.push(void 0);
                   }
