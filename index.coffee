@@ -6,7 +6,6 @@ module.exports = (params) ->
   sprintsLocal = (rapidView, onTotal, onSprint) ->
     sprints
       serverRoot: params.serverRoot
-      strictSSL: params.strictSSL
       user: params.user
       pass: params.pass
       rapidView: rapidView
@@ -42,7 +41,6 @@ module.exports = (params) ->
         )
         search
           serverRoot: params.serverRoot
-          strictSSL: params.strictSSL
           user: params.user
           pass: params.pass
           jql: 'project = "' + params.project + '" and issueType in ("' + requirementTypes.join('", "') + '") and status not in ("' + params.excludedStates.join('", "') + '") order by rank'

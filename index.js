@@ -14,7 +14,6 @@
     sprintsLocal = function(rapidView, onTotal, onSprint) {
       return sprints({
         serverRoot: params.serverRoot,
-        strictSSL: params.strictSSL,
         user: params.user,
         pass: params.pass,
         rapidView: rapidView,
@@ -84,7 +83,6 @@
       return [
         sprintsLocal(params.requirementsRapidView, params.onRequirementSprintsTotal, params.onRequirementSprint), sprintsLocal(params.tasksRapidView, params.onTaskSprintsTotal, params.onTaskSprint), search({
           serverRoot: params.serverRoot,
-          strictSSL: params.strictSSL,
           user: params.user,
           pass: params.pass,
           jql: 'project = "' + params.project + '" and issueType in ("' + requirementTypes.join('", "') + '") and status not in ("' + params.excludedStates.join('", "') + '") order by rank',

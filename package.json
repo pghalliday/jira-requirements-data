@@ -1,13 +1,13 @@
 {
   "name": "jira-requirements-data",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "query jira requirements data",
   "main": "index.js",
   "scripts": {
     "build": "coffee -c index.coffee",
     "prepublish": "npm run build",
     "pretest": "npm run build",
-    "test": "coffee test.coffee"
+    "test": "NODE_TLS_REJECT_UNAUTHORIZED=0 coffee test.coffee"
   },
   "repository": {
     "type": "git",
@@ -23,8 +23,8 @@
     "coffee-script": "^1.9.3"
   },
   "dependencies": {
-    "jira-search": "^0.1.0",
-    "jira-sprints": "^0.1.0",
+    "jira-search": "^0.1.2",
+    "jira-sprints": "^0.1.2",
     "q": "^1.4.1"
   }
 }

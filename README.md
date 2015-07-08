@@ -16,7 +16,6 @@ var jiraRequirementsData = require('jira-requirements-data');
 
 jiraRequirementsData({
   serverRoot: 'https://my.jira.server',
-  strictSSL: true,
   user: 'myuser',
   pass: 'mypassword',
   maxResults: 50,
